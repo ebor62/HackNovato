@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HackNovato</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lora&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            color: white;
+            background-color: black;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: transparent;
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 64px;
+            z-index: 10;
+            transition: background 0.5s, padding 0.5s;
+        }
+        .header.scrolled {
+            background: black;
+            padding: 10px 0;
+        }
+        .morph-section {
+            position: relative;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .morph-section img {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+        }
+        #image1 {
+            z-index: 1;
+            opacity: 1;
+        }
+        .text-overlay {
+            position: absolute;
+            width: 100%;
+            color: white;
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        #text1 {
+            bottom: 10%;
+        }
+        .text-overlay.show {
+            opacity: 1;
+        }
+        .join-section {
+            padding: 60px 20px;
+            background-color: #333;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .join-section h2 {
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .join-section form input,
+        .join-section form button {
+            display: block;
+            width: 80%;
+            margin: 10px auto;
+            padding: 10px;
+            font-size: 18px;
+        }
+        .join-section form button {
+            background-color: #444;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        footer {
+            padding: 20px;
+            background-color: #222;
+            text-align: center;
+            color: white;
+            margin-top: 20px;
+        }
+
+        /* Media Queries for mobile responsiveness */
+        @media (max-width: 768px) {
+            .header {
+                font-size: 48px;
+            }
+            .join-section h2 {
+                font-size: 2em;
+            }
+            .join-section form input,
+            .join-section form button {
+                width: 90%;
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                font-size: 36px;
+            }
+            .join-section h2 {
+                font-size: 1.5em;
+            }
+            .join-section form input,
+            .join-section form button {
+                width: 95%;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">HackNovato</div>
+    <div class="container">
+        <div class="morph-section">
+            <img id="image1" src="https://images.unsplash.com/photo-1504192010706-dd7f569ee2be?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwcm9maWxlLXBhZ2V8MXx8fGVufDB8fHx8fA%3D%3D" alt="First Image">
+            <div class="text-overlay" id="text1">
+                <p><strong>What is <a href="https://hackclub.com" style="color: #fff; text-decoration: underline;">Hack Club</a>?</strong></p>
+                <p>Hack Club is a global network of programming clubs where students learn to code through hands-on projects, collaborating with peers and building amazing things together.</p>
+            </div>
+        </div>
+
+        <div class="join-section">
+            <h2>Join HackNovato</h2>
+            <form id="joinForm">
+                <input type="text" name="name" placeholder="Name" required><br>
+                <input type="text" name="age" placeholder="Age" required><br>
+                <input type="email" name="email" placeholder="Email" required><br>
+                <button type="submit">Join</button>
+            </form>
+        </div>
+
+        <footer>
+            &copy; 2024 HackNovato. All rights reserved.
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            AOS.init({
+                duration: 300, // Faster animation duration
+                easing: 'ease-in-out'
+            });
+
+            // Intersection Observer setup
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px 0px -10% 0px', // Trigger earlier for the subtitle text
+                threshold: 0.5 // Trigger when 50% of the element is visible
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('show');
+                    } else {
+                        entry.target.classList.remove('show');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.text-overlay').forEach(element => {
+                observer.observe(element);
+            });
+
+            window.addEventListener('scroll', function () {
+                const header = document.querySelector('.header');
+                const scrollPosition = window.scrollY;
+                const windowHeight = window.innerHeight;
+                const image1 = document.getElementById('image1');
+
+                if (scrollPosition > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+
+                // Calculate the fade effect for the first image
+                const fadeThreshold = windowHeight / 2;
+                if (scrollPosition < fadeThreshold) {
+                    image1.style.opacity = 1 - (scrollPosition / fadeThreshold);
+                } else {
+                    image1.style.opacity = 0;
+                }
+            });
+
+            document.getElementById('joinForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                const name = formData.get('name');
+                const age = formData.get('age');
+                const email = formData.get('email');
+
+                const mailtoLink = `mailto:nferhart@example.com?subject=New%20HackNovato%20Member&body=Name:%20${name}%0AAge:%20${age}%0AEmail:%20${email}`;
+                window.location.href = mailtoLink;
+                
+                alert('Thank you for joining HackNovato! We\'ll send you the meeting details soon.');
+            });
+        });
+    </script>
+</body>
+</html>
